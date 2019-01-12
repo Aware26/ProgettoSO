@@ -80,7 +80,8 @@ int main(int uarg, char **args) {
 	    exit(EXIT_FAILURE); 
 	}	
     }
-
+    printf("\nRicerca file in corso");
+	fflush(stdout);
     //Prima di uscire il main thread aspetta che finiscono gli altri thread
     for(i=0; i<corenumber; i++){
 	if(pthread_join(idthread[i],NULL) != 0) {
