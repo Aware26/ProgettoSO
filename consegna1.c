@@ -66,7 +66,7 @@ int main(int uarg, char **args) {
 	args[1][strlen(args[1])-1]='\0';
 
 
-    printf("\n---- Inizio il listing delle directory e tempectory di: %s ----\n", args[1]);
+    printf("\n---- Inizio il listing delle directory e subdirectory di: %s ----\n", args[1]);
     setNullList(&list);
      ls_directory(&list, args[1]); // lista la directory passata come argomento
 
