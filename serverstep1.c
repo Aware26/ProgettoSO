@@ -349,9 +349,6 @@ void invialista(listafile lis,int sock, char *path){
     char *temp;
     while(lis != NULL) {
         temp=lis->pathfile;
-            // for(i=0; i<strlen(temp); i++){ 
-            //if(strncmp(&(temp)[i], str, strlen(str)) == 0) {
-               // count++;
          write(sock, (void *)temp, strlen(temp)); 
          len = read(sock, (void *)conferma,15);
        
