@@ -21,16 +21,19 @@ Permette al client di scaricare un file dal server indicando il path
 -FUNZIONE DI UPLOAD
 
 Sintassi: upload [filedacaricare]
+
 Permette al client di caricare un file nella directory /home/<nomeuser>/ del server indicando il nome del file da caricare
 
 -FUNZIONE LISTHOME
 
 Sintassi: listhome
+
 Tramite questa funzione il server invia nuovamente la lista contenente i file.
 
 -FUNZIONE ESCI
 
 Sintassi: esci
+
 Permette al client di chiudere la connessione con il server e terminare
 
 ----Eventuali sviluppi futuri----
