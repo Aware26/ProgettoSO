@@ -41,9 +41,10 @@ void inviook(int sock);
 
 //dichiarazione lista globale
 listafile list;
-pthread_mutex_t mutexlista; // mutex che protegge lista globale 
 
+pthread_mutex_t mutexlista; // mutex che protegge lista globale 
 pthread_mutex_t mutexuscita;
+
 int *controllouscita; //variabile di controllo per la terminazione dei thread
 
 //Credenziali Utente
@@ -52,6 +53,7 @@ char password[]="admin";
 char pass[40];
 char user[80];
 char nomeuser[20];
+
 
 
 int main(void) {
@@ -103,14 +105,14 @@ while(1){
  
 void *workerthread(void *cs){
         int sock;
-        char buff[N],buff2[200];
+        char buff[1000],buff2[200];
 
         
         size_t len;
         
         sock = (*(int *)cs); 
        //Sistema login minimale
-        strcpy(user, "Utente e password standard:admin admin\nInserisci username:");
+       strcpy(user, "Utente e password standard:admin admin\nInserisci username:");
         write(sock, (void *)user, strlen(user));
         len = read(sock, (void *)user, 79);
         if(len > 0)
@@ -142,11 +144,11 @@ void *workerthread(void *cs){
                  }
 //invia la lista
             pthread_mutex_lock(&mutexlista);
-            invialista(list, sock,"/home");
+            invialista(list, sock,"/gome");
             pthread_mutex_unlock(&mutexlista);
  while(1) {
 
-        len = read(sock, (void *)buff, 100);
+        len = read(sock, (void *)buff, 999);
     if(len > 0)
         buff[len-1]='\0';
     if(strlen(buff) > 10 && strncmp(buff, "download ", 9) == 0) {       
@@ -405,19 +407,102 @@ void invialista(listafile lis,int sock, char *path){
     char *temp;
 
     while(lis != NULL) {
-        for(i=0;i<strlen(lis->pathfile);i++)
-            if(strncmp(&(lis->pathfile)[i],path,strlen(path))==0){
+      
                 temp=lis->pathfile;
                 write(sock, (void *)temp, strlen(temp));
                 len = read(sock, (void *)conferma,15);
-            break;
-        }
-             lis=lis->next;
+        
+            lis=lis->next;
     }
         sprintf(conferma, "finito");
         write(sock, (void *)conferma, strlen(conferma));
         len = read(sock, (void *)conferma,16);
 
+}
+void upload(int sock){
+       
+        char buff[600]; 
+        int len=0;
+        
+        FILE *fd = NULL;
+
+        char nomefile[200]="\0";
+
+        //invio okay al client 
+        inviook(sock);
+    
+        len = read(sock, (void *)buff, 199);
+        if(len > 0)
+             buff[len] = '\0';
+
+        if(strncmp(buff,"0",1) == 0) {
+                printf("Errore nel apertura file\n");
+               return;
+        }
+
+        inviook(sock);
+        
+        while(1) {
+ 
+        len = read(sock, (void *)buff,600);
+            if(len > 0)
+            buff[len]='\0';
+	getlogin_r(nomeuser,20);
+        printf("----Carico %s della directory /home/\n",buff);
+        
+        nomefile[0] = '\0';
+
+        strcat(nomefile,"/home/"); //concateno /home/ ovvero la directory dove verrà salvato il file
+        strcat(nomefile,nomeuser); 
+	strcat(nomefile,"/");       
+	strcat(nomefile,buff);
+
+      fd = fopen(nomefile,"r");
+     if(fd != NULL) {     //Se il file già esiste invio un messaggio di errore altrimenti ok 
+            
+            sprintf(buff,"rrore");
+            write(sock,(void *)buff, strlen(buff));
+            fclose(fd);   
+            }
+        else {
+        inviook(sock);
+        break;
+    }  
+        
+    }
+
+      //creo il file in scrittura
+
+ if((fd = fopen(nomefile, "w"))== NULL) {
+        printf("\nErrore file");
+         close(sock);
+        pthread_exit(NULL);         
+    }
+    inviook(sock);
+    while(1) {
+           len = read(sock, (void *)buff,600);
+                 if(len > 0)
+                        buff[len] = '\0';
+                if(strncmp(buff, "finito", 6) == 0) {
+                    inviook(sock);
+                    break;
+                }
+           //scrivo nel file i 600 caratteri
+            fprintf(fd,"%s", buff);
+             //mando l'ok al client
+            inviook(sock);
+
+            }
+            
+    
+    //aggiorno e invio la nuova lista dei file
+    pthread_mutex_lock(&mutexlista);
+    printf("Aggionamento lista causa upload\n");
+    scanhome("/home/");
+    invialista(list, sock,"/home");
+    pthread_mutex_unlock(&mutexlista); 
+
+     fclose(fd); 
 }
 
 //funzione che permette di inviare un file al client 
@@ -461,90 +546,6 @@ void download(char *file, int sock) {
 
 }
 
-void upload(int sock){
-       
-        char buff[600]; 
-        int len=0;
-        
-        FILE *fd = NULL;
-
-        char nomefile[200]="\0";
-
-        //invio okay al client 
-        inviook(sock);
-    
-        len = read(sock, (void *)buff, 199);
-        if(len > 0)
-             buff[len] = '\0';
-
-        if(strncmp(buff,"0",1) == 0) {
-                printf("Errore nel apertura file\n");
-               return;
-        }
-
-        inviook(sock);
-        
-        while(1) {
- 
-        len = read(sock, (void *)buff,600);
-            if(len > 0)
-            buff[len]='\0';
-	getlogin_r(nomeuser,20);
-        printf("----Carico %s della directory /home/\n",buff);
-        
-        nomefile[0] = '\0';
-
-        strcat(nomefile,"/home/"); //concateno /home/ ovvero la directory dove verrà salvato il filepiu il nome del user
-	strcat(nomefile,nomeuser); 
-	 strcat(nomefile,"/");       
-	strcat(nomefile,buff);
-
-      fd = fopen(nomefile,"r");
-     if(fd != NULL) {     //Se il file già esiste invio un messaggio di errore altrimenti ok 
-            sprintf(buff,"rrore");
-            write(sock,(void *)buff, strlen(buff));
-            fclose(fd);   
-            }
-        else {
-                inviook(sock);
-        break;
-    }  
-        
-    }
-
-     fd = fopen(nomefile, "w"); //creo il file in scrittura
-
- if(fd == NULL) {
-        printf("\nErrore file");
-         close(sock);
-        pthread_exit(NULL);         
-    }
-    inviook(sock);
-    while(1) {
-           len = read(sock, (void *)buff,600);
-                 if(len > 0)
-                        buff[len] = '\0';
-                if(strncmp(buff, "finito", 6) == 0) {
-                    inviook(sock);
-                    break;
-                }
-           //scrivo nel file i 600 caratteri
-            fprintf(fd,"%s", buff);
-             //mando l'ok al client
-            inviook(sock);
-
-            }
-            
-    
-    //aggiorno e invio la nuova lista dei file
-    pthread_mutex_lock(&mutexlista);
-    printf("Aggionamento lista causa upload\n");
-    scanhome("/home/");
-    invialista(list, sock,"/home/");
-    pthread_mutex_unlock(&mutexlista); 
-
-     fclose(fd); 
-}
 
 
 void inviook(int sock){
