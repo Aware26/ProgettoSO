@@ -22,7 +22,7 @@ Permette al client di scaricare un file dal server indicando il path
 
 Sintassi: upload [filedacaricare]
 
-Permette al client di caricare un file nella directory /home/<nomeuser>/ del server indicando il nome del file da caricare
+Permette al client di caricare un file nella directory /home/[nomeuser]/ del server indicando il nome del file da caricare
 
 -FUNZIONE LISTHOME
 
