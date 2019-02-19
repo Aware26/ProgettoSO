@@ -83,7 +83,9 @@ while(1){
     if(strlen(buff) == 5 && strncmp(buff, "esci", 4)== 0) {
 	    close(sock);
 	    exit(EXIT_SUCCESS);
-	}else if(strlen(buff) > 10 && strncmp(buff, "download ", 9) == 0) {   //nel caso l'utente sceglie download
+	}
+
+	else if(strlen(buff) > 10 && strncmp(buff, "download ", 9) == 0) {   //nel caso l'utente sceglie download
 				len = read(sock, (void *)buff, 199);
 		    	if(len > 0)
 				     buff[len] = '\0';
@@ -135,11 +137,6 @@ while(1){
 
 			    }
 	}
-	else if(strncmp(buff,"listhome ",9)){
-				printf("----Lista dei file-----\n");
-				stampafile(sock);
-
-}
 	else if(strlen(buff) > 8 && strncmp(buff, "upload ", 7) == 0) {  //nel caso in cui l'utente sceglie upload
 						
 						nomefile[0]='\0';
@@ -203,7 +200,14 @@ while(1){
 			    printf("----Lista dei file-----\n");
 				stampafile(sock);
 			}
-}}
+}
+			else if(strncmp(buff,"listhome ",9)){
+				printf("----Lista dei file-----\n");
+				stampafile(sock);
+
+}
+}
+
 }
 
 
