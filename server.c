@@ -519,7 +519,7 @@ void upload(int sock){
          close(sock);
         pthread_exit(NULL);         
     }
-    
+    inviook(sock);
     while(1) {
            len = read(sock, (void *)buff,600);
                  if(len > 0)
