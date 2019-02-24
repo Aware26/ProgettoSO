@@ -9,7 +9,7 @@ Applicazione che fornisce un servizio di file transfer,utilizzando il codice del
 Sommario funzionamento
 
 L'applicazione implementa un sistema client-server ,utilizzando i socket nel dominio AF_INET di ipv4,la comunicazione avviene tramite il protocollo TCP(quindi è di tipo stream),viene instaurata una connessione fra il client e il server,questo comporta un overhead maggiore ma rende l'applicazione affidabile.
-Il server inizialmente prima di porsi in attesa di ricevere connessioni con la accept(),effettua la scansione della directory home e salva i file in una lista.
+Il server inizialmente prima di porsi in attesa di ricevere connessioni con la accept(),effettua la scansione ricorsivamente le directory e subdirectory della home e salva i nome file in una lista.
 Appena arriva una connessione crea un thread per il client ,e tramite il thread creato il server richiede l accesso tramite un sistema di login minimale.Dopo che il client effettua il login correttamente il server gli invia la lista dei file e il client dopo aver stampato la lista ,stampa un menu che elenca le funzionalità offerte dal server.
 
 -FUNZIONE DI DOWNLOAD
