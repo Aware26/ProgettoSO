@@ -36,7 +36,7 @@ Sintassi: esci
 
 Permette al client di chiudere la connessione con il server e terminare
 
----Problematiche incontrate e risolte---
+---Problematiche riscontrate e risolte---
 
 Sincronizzazione server e client.
  
