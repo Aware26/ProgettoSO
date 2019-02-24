@@ -144,7 +144,7 @@ void *workerthread(void *cs){
                  }
 //invia la lista
             pthread_mutex_lock(&mutexlista);
-            invialista(list, sock,"/gome");
+            invialista(list, sock,"/home");
             pthread_mutex_unlock(&mutexlista);
  while(1) {
 
