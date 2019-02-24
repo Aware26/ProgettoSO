@@ -36,13 +36,15 @@ Sintassi: esci
 
 Permette al client di chiudere la connessione con il server e terminare
 
--Problematiche incontrate e risolte-
+---Problematiche incontrate e risolte---
 
 Sincronizzazione server e client.
-  Salvataggio file inviato al server nella directory /home/(richiedeva permessi amministratore sudo).
-  Accesso alla risorsa condivisa(la lista dei file) da parte dei thread e controllo uscita.
+ 
+Salvataggio file inviato al server nella directory /home/(richiedeva permessi amministratore sudo).
 
-----Eventuali sviluppi futuri----
+Accesso alla risorsa condivisa(la lista dei file) da parte dei thread e controllo uscita.
+
+---Eventuali sviluppi futuri---
 
 Migliorare il sistema di login rendendolo multiutente,implementando un sistema che permetta a più utenti di collegarsi al server ognuno con i suoi permessi e restrizione all'accesso alle directory e al download dei file.
 Rendere più "sicuro" il programma tramite lo scambio di certificati fra il client e il server.
